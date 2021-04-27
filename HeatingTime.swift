@@ -7,6 +7,11 @@ since   2020-04-26
 */
 import Foundation
 
+enum InvalidInputError : Error {
+  case invalidInput
+}
+
+
 let foodTypeList = ["PIZZA", "SUB", "SOUP"]
 let individualTime: Float
 
@@ -29,22 +34,30 @@ if (foodTypeList.contains(foodType.uppercased())) {
   // Integer Input
   print("How many \(foodType)(s) are you heating (max 3 and they must all be "
       + "the same items)? ", terminator: "")
-  let foodNumber = Int(readLine()!)
+  
+  do {
+    guard let foodNumber = Int(readLine()!) else{
+      throw InvalidInputError.invalidInput
+    }
 
-  if (Int(foodNumber!) <= 3) {
-    // Process
-    let cookTime = (individualTime / Float(foodNumber!)) 
-                    * pow(3.0, (Float(foodNumber!) - 1))
-    // convert float minutes to minutes and seconds
-    let cookTimeMin = floor(cookTime)
-    let cookTimeSec = (cookTime - cookTimeMin) * 60
+    if (Int(foodNumber) > 0 && Int(foodNumber) <= 3) {
+      // Process
+      let cookTime = (individualTime / Float(foodNumber)) 
+                      * pow(3.0, (Float(foodNumber) - 1))
+      // convert float minutes to minutes and seconds
+      let cookTimeMin = floor(cookTime)
+      let cookTimeSec = (cookTime - cookTimeMin) * 60
 
-    // Output
-    print("The total cook time is \(Int(cookTimeMin)) min \(cookTimeSec) sec.")
-  } else {
-    print("Max number of food is 3.")
+      // Output
+      print("The total cook time is \(Int(cookTimeMin)) min \(cookTimeSec) "
+            + "sec.")
+    } else {
+      print("Max number of food is 3.")
+    }
+  } catch {
+    print("Invalid input.")
   }
 } else {
-  print("Invalid input.")
+  print("There is no food for the given type.")
 }
 print("\nDone.")
